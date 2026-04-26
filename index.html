@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>接金币游戏</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+    }
+    
+    #gameContainer {
+      position: relative;
+    }
+    
+    #gameCanvas {
+      border: 2px solid #333;
+      border-radius: 8px;
+    }
+    
+    #ui {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: white;
+      font-size: 18px;
+      text-shadow: 1px 1px 2px black;
+      pointer-events: none;
+    }
+    
+    #startScreen, #endScreen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      text-align: center;
+    }
+    
+    #endScreen {
+      display: none;
+    }
+    
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    
+    button:hover {
+      background: #45a049;
+    }
+    
+    .theme-selector {
+      margin-top: 20px;
+    }
+    
+    .theme-selector label {
+      margin-right: 10px;
+      cursor: pointer;
+    }
+    
+    .theme-selector input {
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div id="gameContainer">
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <div id="ui">
+      <div>分数: <span id="score">0</span></div>
+      <div>生命: <span id="lives">3</span></div>
+      <div>时间: <span id="time">60</span></div>
+      <div>连击: <span id="combo">0</span></div>
+      <div>最高分: <span id="highScore">0</span></div>
+      <div id="powerUpStatus"></div>
+    </div>
+    <div id="startScreen">
+      <h1>接金币游戏</h1>
+      <p>用鼠标移动或左右方向键控制篮子</p>
+      <p>接住金币(黄色)得10分，钻石(蓝色)得30分</p>
+      <p>避开炸弹(黑色)，碰到扣20分或损失1条命</p>
+      <p>连续接住5个非炸弹物品后，下一个奖励分数翻倍</p>
+      <p>道具：磁铁(自动吸附近物品5秒)、时间停止(暂停3秒)</p>
+      <div class="theme-selector">
+        <label><input type="radio" name="theme" value="day" checked> 白天</label>
+        <label><input type="radio" name="theme" value="night"> 黑夜</label>
+        <label><input type="radio" name="theme" value="tropical"> 热带</label>
+      </div>
+      <button id="startButton">开始游戏</button>
+    </div>
+    <div id="endScreen">
+      <h1>游戏结束</h1>
+      <p>最终分数: <span id="finalScore">0</span></p>
+      <p>最高分: <span id="finalHighScore">0</span></p>
+      <button id="restartButton">重新开始</button>
+    </div>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
