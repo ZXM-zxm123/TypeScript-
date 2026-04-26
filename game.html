@@ -404,8 +404,16 @@
           return;
         }
         
-        // 更新计时器
-        if (currentTime - this.lastTimeUpdate >= 1000) {
+        // 检查道具效果（在处理时间之前）
+        if (this.magnetActive && currentTime > this.magnetEndTime) {
+          this.magnetActive = false;
+        }
+        if (this.timeStopActive && currentTime > this.timeStopEndTime) {
+          this.timeStopActive = false;
+        }
+        
+        // 更新计时器（仅在时间停止不激活时）
+        if (!this.timeStopActive && currentTime - this.lastTimeUpdate >= 1000) {
           this.timeLeft--;
           this.lastTimeUpdate = currentTime;
           
@@ -422,47 +430,37 @@
           }
         }
         
-        // 检查道具效果
-        if (this.magnetActive && currentTime > this.magnetEndTime) {
-          this.magnetActive = false;
-        }
-        if (this.timeStopActive && currentTime > this.timeStopEndTime) {
-          this.timeStopActive = false;
-        }
-        
         // 处理输入
         this.handleInput();
         
-        // 生成物品
-        if (currentTime - this.lastItemSpawn >= this.itemSpawnInterval && !this.timeStopActive) {
+        // 生成物品（时间停止时也继续生成）
+        if (currentTime - this.lastItemSpawn >= this.itemSpawnInterval) {
           this.spawnItem();
           this.lastItemSpawn = currentTime;
         }
         
-        // 更新物品位置
+        // 更新物品位置（时间停止时也继续移动）
         for (let i = this.items.length - 1; i >= 0; i--) {
           const item = this.items[i];
           
-          // 时间停止时不移动
-          if (!this.timeStopActive) {
-            item.y += item.speed;
+          // 物品正常移动（时间停止时不停止）
+          item.y += item.speed;
+          
+          // 磁铁效果：吸引物品（时间停止时也生效）
+          if (this.magnetActive) {
+            const basketCenterX = this.basket.x + this.basket.width / 2;
+            const basketCenterY = this.basket.y + this.basket.height / 2;
+            const dx = basketCenterX - item.x;
+            const dy = basketCenterY - item.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
             
-            // 磁铁效果：吸引物品
-            if (this.magnetActive) {
-              const basketCenterX = this.basket.x + this.basket.width / 2;
-              const basketCenterY = this.basket.y + this.basket.height / 2;
-              const dx = basketCenterX - item.x;
-              const dy = basketCenterY - item.y;
-              const distance = Math.sqrt(dx * dx + dy * dy);
-              
-              if (distance < 200) {
-                item.x += dx * 0.05;
-                item.y += dy * 0.02;
-              }
+            if (distance < 200) {
+              item.x += dx * 0.05;
+              item.y += dy * 0.02;
             }
           }
           
-          // 检查碰撞
+          // 检查碰撞（时间停止时也可以碰撞）
           if (this.checkCollision(item)) {
             this.handleItemCollision(item);
             this.items.splice(i, 1);
