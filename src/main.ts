@@ -351,7 +351,8 @@ class GoldCatcherGame {
       item.y += item.speed;
       
       // 磁铁效果：吸引物品（时间停止时也生效）
-      if (this.magnetActive) {
+      // 只吸引正面物品（金币、钻石、道具），不吸引炸弹
+      if (this.magnetActive && item.type !== 'bomb') {
         const basketCenterX = this.basket.x + this.basket.width / 2;
         const basketCenterY = this.basket.y + this.basket.height / 2;
         const dx = basketCenterX - item.x;
@@ -412,11 +413,12 @@ class GoldCatcherGame {
         break;
       case 'bomb':
         this.combo = 0;
-        if (this.score >= 20) {
-          this.score -= 20;
-        } else {
-          this.lives--;
-        }
+        // 炸弹扣 1 条命（根据设计要求应为扣命）
+        this.lives--;
+        // 可选：同时扣 20 分作为额外惩罚
+        // if (this.score >= 20) {
+        //   this.score -= 20;
+        // }
         break;
       case 'magnet':
         this.magnetActive = true;
